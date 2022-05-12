@@ -1,0 +1,22 @@
+private void GetADUsers()  
+{ 
+    dt.Columns.AddRange(new DataColumn[2]  
+    { 
+        new DataColumn("AccountName", typeof (string)),  
+            new DataColumn("GivenName", typeof (string))  
+    }); 
+    using(var context = new PrincipalContext(ContextType.Domain, "enter your domain here"))  
+    { 
+        using(var searcher = new PrincipalSearcher(new UserPrincipal(context)))  
+        { 
+            foreach(var result in searcher.FindAll())  
+            { 
+                DirectoryEntry de = result.GetUnderlyingObject() as DirectoryEntry;  
+                var clsuser = new ClsUsers();  
+                dt.Rows.Add(Convert.ToString(de.Properties["samAccountName"].Value), Convert.ToString(de.Properties["givenName"].Value)); 
+            } 
+            GridView1.DataSource = dt; 
+            GridView1.DataBind(); 
+        } 
+    } 
+} 
